@@ -3,7 +3,6 @@
     <h1>Поиск имен</h1>
     <input
         type="text"
-        v-model="query"
         @input="onInput"
         @keydown.down.prevent="onKeyDown('down')"
         @keydown.up.prevent="onKeyDown('up')"
@@ -30,6 +29,7 @@
 
 <script setup>
 import { ref, computed } from 'vue';
+import debounce from "lodash/debounce";
 
 
 const names = [
@@ -49,10 +49,11 @@ const filteredNames = computed(() => {
   );
 });
 
-const onInput = () => {
+const onInput = debounce((e) => {
+  query.value = e.target.value;
   hasSelectedValue.value = false;
   activeIndex.value = -1; // Сброс активного индекса при новом вводе
-};
+}, 500);
 
 const selectName = (name) => {
   hasSelectedValue.value = true;
