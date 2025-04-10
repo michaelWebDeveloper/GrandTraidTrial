@@ -9,21 +9,29 @@
         @keydown.tab.prevent="onKeyDown('up')"
         @keydown.enter.prevent="selectSuggestion"
         placeholder="Введите имя..."
+        :value="query"
     />
-    <ul v-if="filteredNames.length > 0 && !hasSelectedValue" class="suggestions">
-      <li
-          v-for="(name, index) in filteredNames"
-          :key="name"
-          :class="{ active: index === activeIndex }"
-          @click="selectName(name)"
-          @mouseover="activeIndex = index"
-      >
-        {{ name }}
-      </li>
-    </ul>
-    <div v-if="filteredNames.length === 0" class="no-results">
-      Ничего не найдено
-    </div>
+    <Transition>
+      <ul v-if="filteredNames.length > 0 && !hasSelectedValue" class="suggestions">
+        <li
+            v-for="(name, index) in filteredNames"
+            :key="name"
+            :class="{ active: index === activeIndex }"
+            @click="selectName(name)"
+            @mouseover="activeIndex = index"
+        >
+          {{ name }}
+        </li>
+      </ul>
+    </Transition>
+
+    <Transition>
+      <div v-if="filteredNames.length === 0" class="no-results">
+        Ничего не найдено
+      </div>
+    </Transition>
+
+
   </div>
 </template>
 
@@ -89,6 +97,7 @@ const onKeyDown = (direction) => {
   background: white;
   border-radius: 4px;
   padding: 10px;
+  height: 140px;
 }
 input {
   width: 100%;
@@ -101,6 +110,9 @@ input {
   border: 1px solid #ccc;
   max-height: 200px;
   overflow-y: auto;
+  position: absolute;
+  width: 90%;
+  background: white;
 }
 .suggestions li {
   padding: 8px;
@@ -112,5 +124,15 @@ input {
 }
 .no-results {
   margin-top: 8px;
+}
+
+.v-enter-active,
+.v-leave-active {
+  transition: opacity .5s ease;
+}
+
+.v-enter-from,
+.v-leave-to {
+  opacity: 0;
 }
 </style>
